@@ -14,7 +14,12 @@ func init() {
 	config.Connect()
 	db = config.GetDB()
 	db.AutoMigrate(&User{})
+	db.AutoMigrate(&Category{})
 
+}
+
+type CustomModel struct {
+	ID uint `gorm:"primaryKey"`
 }
 
 // User represents a user of the system.
@@ -75,16 +80,54 @@ func LoginUser(email, password string) (*User, error) {
 
 // Category represents a category of inventory items.
 type Category struct {
-	ID          int       `json:"id"`
+	CustomModel
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+// GetUserByID retrieves a user by ID.
+func GetCategoryByID(id int) *Category {
+	var category Category
+	db.Where("ID=?", id).Find(&category)
+
+	return &category
+}
+
+func GetAllCategories() []Category {
+
+	var categories []Category
+	db.Find(&categories)
+
+	return categories
+}
+
+func (cat *Category) CreateCategory() *Category {
+	db.NewRecord(cat)
+	db.Create(&cat)
+	return cat
+}
+
+// Delete Category
+func DeleteCategory(id int) error {
+	if err := db.Delete(&Category{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// Update Category
+func (cat *Category) UpdateCategory() error {
+	if err := db.Save(&cat).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // Supplier represents a supplier of inventory items.
 type Supplier struct {
-	ID            int       `json:"id"`
+	CustomModel
 	Name          string    `json:"name"`
 	ContactPerson string    `json:"contact_person"`
 	Email         string    `json:"email"`
@@ -96,7 +139,7 @@ type Supplier struct {
 
 // InventoryItem represents an individual inventory item.
 type InventoryItem struct {
-	ID          int       `json:"id"`
+	CustomModel
 	Name        string    `json:"name"`
 	Description string    `json:"description"`
 	CategoryID  int       `json:"category_id"`
@@ -110,7 +153,7 @@ type InventoryItem struct {
 
 // Transaction represents a transaction performed on an inventory item.
 type Transaction struct {
-	ID              int       `json:"id"`
+	CustomModel
 	UserID          int       `json:"user_id"`
 	Action          string    `json:"action"`
 	InventoryItemID int       `json:"inventory_item_id"`

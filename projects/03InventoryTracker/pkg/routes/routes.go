@@ -18,12 +18,12 @@ func SetUpRoutes() *mux.Router {
 	// Login route
 	//r.HandleFunc("/login", controllers.LoginUser).Methods("POST")
 
-	// // Category routes
-	// r.HandleFunc("/categories", controllers.GetCategories).Methods("GET")
-	// r.HandleFunc("/categories/{id}", controllers.GetCategory).Methods("GET")
-	// r.HandleFunc("/categories", controllers.CreateCategory).Methods("POST")
-	// r.HandleFunc("/categories/{id}", controllers.UpdateCategory).Methods("PUT")
-	// r.HandleFunc("/categories/{id}", controllers.DeleteCategory).Methods("DELETE")
+	// Category routes
+	r.HandleFunc("/categories", controllers.GetCategories).Methods("GET")
+	r.HandleFunc("/categories/{id}", controllers.GetCategoryByID).Methods("GET")
+	r.HandleFunc("/categories", controllers.CreateCategory).Methods("POST")
+	r.HandleFunc("/categories/{id}", controllers.UpdateCategory).Methods("PUT")
+	r.HandleFunc("/categories/{id}", controllers.DeleteCategory).Methods("DELETE")
 
 	// // Supplier routes
 	// r.HandleFunc("/suppliers", controllers.GetSuppliers).Methods("GET")
