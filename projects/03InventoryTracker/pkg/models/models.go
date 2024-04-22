@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -15,6 +17,9 @@ func init() {
 	db = config.GetDB()
 	db.AutoMigrate(&User{})
 	db.AutoMigrate(&Category{})
+	db.AutoMigrate(&Supplier{})
+	db.AutoMigrate(&InventoryItem{})
+	db.AutoMigrate(&Transaction{})
 
 }
 
@@ -137,6 +142,51 @@ type Supplier struct {
 	UpdatedAt     time.Time `json:"updated_at"`
 }
 
+// Get All Suppliers
+func GetAllSuppliers() []Supplier {
+	var suppliers []Supplier
+	db.Find(&suppliers)
+	return suppliers
+}
+
+// Create Supplier
+func (supplier *Supplier) CreateSupplier() *Supplier {
+	db.NewRecord(supplier)
+	db.Create(&supplier)
+	return supplier
+}
+
+// Delete Supplier
+func DeleteSupplier(id int) error {
+	if err := db.Delete(&Supplier{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// GetSupplierByID retrieves details of a supplier by ID.
+func GetSupplierByID(id int) (*Supplier, error) {
+	var supplier Supplier
+	err := db.Where("ID=?", id).First(&supplier).Error
+	if err != nil {
+		// Check if the error is due to record not found
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("supplier with ID %d not found", id)
+		}
+		// Return other database-related errors
+		return nil, fmt.Errorf("error fetching supplier details: %v", err)
+	}
+	return &supplier, nil
+}
+
+// update Supplier
+func (supplier *Supplier) UpdateSupplier() error {
+	if err := db.Save(&supplier).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // InventoryItem represents an individual inventory item.
 type InventoryItem struct {
 	CustomModel
@@ -151,6 +201,53 @@ type InventoryItem struct {
 	UpdatedAt   time.Time `json:"updated_at"`
 }
 
+// Get All InventoryItem
+func GetAllInventory() []InventoryItem {
+	var inventories []InventoryItem
+	db.Find(&inventories)
+	return inventories
+}
+
+// Get INventoryByID
+func GetInventoryByID(id int) (*InventoryItem, error) {
+	var inventory InventoryItem
+	err := db.Where("ID=?", id).First(&inventory).Error
+	if err != nil {
+		// Check if the error is due to record not found
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("supplier with ID %d not found", id)
+		}
+		// Return other database-related errors
+		return nil, fmt.Errorf("error fetching supplier details: %v", err)
+	}
+	fmt.Println(&inventory)
+	return &inventory, nil
+
+}
+
+// Create Inventory Item
+func (inventory *InventoryItem) CreateInventory() *InventoryItem {
+	db.NewRecord(inventory)
+	db.Create(&inventory)
+	return inventory
+}
+
+// Delete Inventory Record
+func DeleteInventoryItem(id int) error {
+	if err := db.Delete(&InventoryItem{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// update inventory Record
+func (inventory *InventoryItem) UpdateInventroryItem() error {
+	if err := db.Save(&inventory).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
 // Transaction represents a transaction performed on an inventory item.
 type Transaction struct {
 	CustomModel
@@ -158,5 +255,51 @@ type Transaction struct {
 	Action          string    `json:"action"`
 	InventoryItemID int       `json:"inventory_item_id"`
 	QuantityChanged int       `json:"quantity_changed"`
-	Timestamp       time.Time `json:"timestamp"`
+	UpdatedAt       time.Time `json:"updated_at"`
+}
+
+// Get All Transaction
+func GetAllTransaction() []Transaction {
+	var transaction []Transaction
+	db.Find(&transaction)
+	return transaction
+}
+
+// Get TransactionByID
+func GetTransactionByID(id int) (*Transaction, error) {
+	var trans Transaction
+	err := db.Where("ID=?", id).First(&trans).Error
+	if err != nil {
+		// Check if the error is due to record not found
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, fmt.Errorf("supplier with ID %d not found", id)
+		}
+		// Return other database-related errors
+		return nil, fmt.Errorf("error fetching supplier details: %v", err)
+	}
+	return &trans, nil
+
+}
+
+// Create Transaction
+func (trans *Transaction) CreateTransaction() *Transaction {
+	db.NewRecord(trans)
+	db.Create(&trans)
+	return trans
+}
+
+// Delete Transaction Record
+func DeleteTransaction(id int) error {
+	if err := db.Delete(&Transaction{}, id).Error; err != nil {
+		return err
+	}
+	return nil
+}
+
+// update inventory Record
+func (transaction *Transaction) UpdateTransactionItem() error {
+	if err := db.Save(&transaction).Error; err != nil {
+		return err
+	}
+	return nil
 }

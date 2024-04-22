@@ -25,26 +25,26 @@ func SetUpRoutes() *mux.Router {
 	r.HandleFunc("/categories/{id}", controllers.UpdateCategory).Methods("PUT")
 	r.HandleFunc("/categories/{id}", controllers.DeleteCategory).Methods("DELETE")
 
-	// // Supplier routes
-	// r.HandleFunc("/suppliers", controllers.GetSuppliers).Methods("GET")
-	// r.HandleFunc("/suppliers/{id}", controllers.GetSupplier).Methods("GET")
-	// r.HandleFunc("/suppliers", controllers.CreateSupplier).Methods("POST")
-	// r.HandleFunc("/suppliers/{id}", controllers.UpdateSupplier).Methods("PUT")
-	// r.HandleFunc("/suppliers/{id}", controllers.DeleteSupplier).Methods("DELETE")
+	// Supplier routes
+	r.HandleFunc("/suppliers", controllers.GetSupplier).Methods("GET")
+	r.HandleFunc("/suppliers/{id}", controllers.GetSupplierByID).Methods("GET")
+	r.HandleFunc("/suppliers", controllers.CreateSupplier).Methods("POST")
+	r.HandleFunc("/suppliers/{id}", controllers.UpdateSupplier).Methods("PUT")
+	r.HandleFunc("/suppliers/{id}", controllers.DeleteSupplier).Methods("DELETE")
 
-	// // InventoryItem routes
-	// r.HandleFunc("/inventory-items", controllers.GetInventoryItems).Methods("GET")
-	// r.HandleFunc("/inventory-items/{id}", controllers.GetInventoryItem).Methods("GET")
-	// r.HandleFunc("/inventory-items", controllers.CreateInventoryItem).Methods("POST")
-	// r.HandleFunc("/inventory-items/{id}", controllers.UpdateInventoryItem).Methods("PUT")
-	// r.HandleFunc("/inventory-items/{id}", controllers.DeleteInventoryItem).Methods("DELETE")
+	// InventoryItem routes
+	r.HandleFunc("/inventory-items", controllers.GetInventoryHandler).Methods("GET")
+	r.HandleFunc("/inventory-items/{id}", controllers.GetInventoryByIdHandler).Methods("GET")
+	r.HandleFunc("/inventory-items", controllers.CreateInventoryHandler).Methods("POST")
+	r.HandleFunc("/inventory-items/{id}", controllers.UpdateInventoryHandler).Methods("PUT")
+	r.HandleFunc("/inventory-items/{id}", controllers.DeleteInventoryHandler).Methods("DELETE")
 
-	// // Transaction routes
-	// r.HandleFunc("/transactions", controllers.GetTransactions).Methods("GET")
-	// r.HandleFunc("/transactions/{id}", controllers.GetTransaction).Methods("GET")
-	// r.HandleFunc("/transactions", controllers.CreateTransaction).Methods("POST")
-	// r.HandleFunc("/transactions/{id}", controllers.UpdateTransaction).Methods("PUT")
-	// r.HandleFunc("/transactions/{id}", controllers.DeleteTransaction).Methods("DELETE")
+	// Transaction routes
+	r.HandleFunc("/transactions", controllers.GetTransactionHandler).Methods("GET")
+	r.HandleFunc("/transactions/{id}", controllers.GetTransactionByIdHandler).Methods("GET")
+	r.HandleFunc("/transactions", controllers.CreateTransactionHandler).Methods("POST")
+	r.HandleFunc("/transactions/{id}", controllers.UpdateInventoryHandler).Methods("PUT")
+	r.HandleFunc("/transactions/{id}", controllers.DeleteTransactionHandler).Methods("DELETE")
 
 	return r
 }

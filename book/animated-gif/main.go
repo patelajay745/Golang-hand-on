@@ -5,9 +5,10 @@ import (
 	"image/color"
 	"image/gif"
 	"io"
+	"log"
 	"math"
 	"math/rand"
-	"os"
+	"net/http"
 )
 
 var palette = []color.Color{color.RGBA{R: 255, G: 0, B: 0, A: 255}, color.RGBA{R: 0, G: 255, B: 0, A: 255}, color.RGBA{R: 0, G: 0, B: 255, A: 255}}
@@ -19,7 +20,10 @@ const (
 )
 
 func main() {
-	lissajous(os.Stdout)
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { lissajous(w) })
+	log.Fatal(http.ListenAndServe(":8000", nil))
+
 }
 func lissajous(out io.Writer) {
 

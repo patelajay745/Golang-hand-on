@@ -11,8 +11,6 @@ import (
 	"github.com/patelajay745/projects/03InventoryTracker/pkg/utils"
 )
 
-var newCategory models.Category
-
 func GetCategories(w http.ResponseWriter, r *http.Request) {
 
 	categoryFromDB := models.GetAllCategories()
