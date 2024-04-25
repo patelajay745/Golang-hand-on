@@ -36,6 +36,7 @@ func CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body and populate the newTransaction struct with the received data
 	utils.ParseBody(r, newTransaction)
 
+	// Print the parsed transaction data
 	fmt.Println(newTransaction)
 
 	createdTransaction := newTransaction.CreateTransaction()
@@ -44,7 +45,6 @@ func CreateTransactionHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated) // Set the status code to 201 (Created)
 	json.NewEncoder(w).Encode(createdTransaction)
-
 }
 
 func DeleteTransactionHandler(w http.ResponseWriter, r *http.Request) {

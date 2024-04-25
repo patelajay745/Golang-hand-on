@@ -32,6 +32,8 @@ func CreateInventoryHandler(w http.ResponseWriter, r *http.Request) {
 	// Parse the request body and populate the newInventory struct with the received data
 	utils.ParseBody(r, newInventory)
 
+	fmt.Println(newInventory)
+
 	createdInventory := newInventory.CreateInventory()
 
 	// Encode the created supplier into JSON format and send it in the response body

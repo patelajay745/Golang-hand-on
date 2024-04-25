@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/patelajay745/projects/03InventoryTracker/pkg/models"
@@ -14,6 +15,7 @@ import (
 var NewUser models.User
 
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
+
 	userFromDB := models.GetAllUsers()
 	res, _ := json.Marshal(userFromDB)
 	w.Header().Set("Content-Type", "application/Json")
@@ -53,8 +55,17 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
+
 	CreateUser := &models.User{}
 	utils.ParseBody(r, CreateUser)
+
+	// Manually validate the role field
+	validRoles := map[string]bool{"admin": true, "manager": true, "cashier": true, "cook": true}
+	if !validRoles[strings.ToLower(CreateUser.Role)] {
+		http.Error(w, "Invalid role", http.StatusBadRequest)
+		return
+	}
+
 	u := CreateUser.CreateUser()
 	res, _ := json.Marshal(u)
 	w.Header().Set("Content-Type", "application/Json")
@@ -66,6 +77,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var detailsFromUser = &models.User{}
 	utils.ParseBody(r, detailsFromUser)
+
+	// Manually validate the role field
+	validRoles := map[string]bool{"admin": true, "manager": true, "cashier": true, "cook": true}
+	if !validRoles[strings.ToLower(detailsFromUser.Role)] {
+		http.Error(w, "Invalid role", http.StatusBadRequest)
+		return
+	}
 
 	vars := mux.Vars(r)
 

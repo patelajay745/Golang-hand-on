@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"github.com/patelajay745/projects/03InventoryTracker/pkg/config"
@@ -20,6 +21,7 @@ func init() {
 	db.AutoMigrate(&Supplier{})
 	db.AutoMigrate(&InventoryItem{})
 	db.AutoMigrate(&Transaction{})
+	db.AutoMigrate(&User{})
 
 }
 
@@ -27,13 +29,12 @@ type CustomModel struct {
 	ID uint `gorm:"primaryKey"`
 }
 
-// User represents a user of the system.
 type User struct {
-	gorm.Model
-	Username string `json:"username"`
+	CustomModel
+	Username string `json:"username" validate:"required, min=2,max=100"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
-	Role     string `json:"role"`
+	Role     string `json:"role" validate:"required, eq=admin|eq=manager|eq=cashier|eq=cook|eq=Admin|eq=Manager|eq=Cashier|eq=Cook"`
 }
 
 func (u *User) CreateUser() *User {
@@ -77,7 +78,7 @@ func DeleteUser(id int) error {
 // LoginUser authenticates a user based on email and password.
 func LoginUser(email, password string) (*User, error) {
 	var user User
-	if err := db.Where("email = ? AND password = ?", email, password).First(&user).Error; err != nil {
+	if err := db.Where("username = ? AND password = ?", email, password).First(&user).Error; err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -302,4 +303,16 @@ func (transaction *Transaction) UpdateTransactionItem() error {
 		return err
 	}
 	return nil
+}
+
+// for login
+type Credentials struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type CustomClaims struct {
+	UserID int    `json:"user_id"`
+	Role   string `json:"role"`
+	jwt.StandardClaims
 }
